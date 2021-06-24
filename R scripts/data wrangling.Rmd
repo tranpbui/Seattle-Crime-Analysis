@@ -1,0 +1,143 @@
+
+```{r, message=FALSE}
+library(tidyverse)
+library(lubridate)
+```
+
+
+```{r, message = FALSE}
+# load the data
+df <- read_csv("SeattleCrimeData.csv")
+```
+
+
+```{r, message = FALSE}
+# rename columns
+df <- df %>% 
+  rename(report_num = `Report Number`,
+         offense_id = `Offense ID`,
+         offense_time= `Offense Start DateTime`,
+         crime_category = `Crime Against Category`,
+         parent_group = `Offense Parent Group`,
+         offense = `Offense`, 
+         area = `MCPP`,
+         address = `100 Block Address`,
+         long = `Longitude`,
+         lat = `Latitude`,
+         precinct = `Precinct`,
+         sector = `Sector`, 
+         beat = `Beat`
+        )
+```
+
+
+```{r, message = FALSE}
+df <- df %>%
+  select(report_num,
+         offense_id,
+         offense_time,
+         crime_category,
+         parent_group,
+         offense,
+         area,
+         address,
+         long,
+         lat,
+         precinct,
+         sector, 
+         beat)
+```
+
+
+```{r, message = FALSE}
+names(df)
+```
+
+```{r, message = FALSE}
+typeof(df$offense_time)
+```
+
+
+```{r, message = FALSE}
+# Return unique values for the selected columns
+for (i in names(df))
+{
+  print(unique(df[c(i)]))
+}
+```
+
+
+
+```{r, message = FALSE}
+# correct typo mistake
+df$area[df$area == "DOWNTOWN COMMERICAL"] <- "DOWNTOWN COMMERCIAL"
+
+# replace missing values as NA 
+df$area[df$area == "UNKNOWN"] <- NA
+
+df$area[df$address == "UNKNOWN"] <- NA
+
+df$beat[df$beat == "UNKNOWN"] <- NA
+
+df$sector[df$sector == "UNKNOWN"] <- NA
+
+df$precinct[df$precinct == "UNKNOWN"] <- NA
+
+df$long[df$long == 0.00000] <- NA
+
+df$lat[df$lat == 0.00000] <- NA
+```
+
+
+
+```{r}
+# Count the number of NAs in each column
+df %>% 
+  is.na() %>% # return NA values 
+  colSums() # return the sum of NA values of each column
+```
+
+
+```{r, message = FALSE}
+df %>% 
+  select(offense_time) %>% 
+  head(20)
+```
+
+
+```{r, message = FALSE}
+# parse datetime with month, date, year and hour, minute, second format
+df$offense_time <- mdy_hms(df$offense_time)
+```
+
+
+```{r, message = FALSE}
+typeof(df$offense_time)
+```
+
+
+```{r, message = FALSE}
+# filter year range 
+df <- df %>% 
+  filter(year(offense_time) %in% 2015:2020) 
+```
+
+
+```{r, message = FALSE}
+# create new datetime columns
+df <- df %>% 
+  mutate(year = year(offense_time), 
+         month = month(offense_time, label = TRUE), 
+         day = wday(offense_time, label = TRUE),
+         hour = hour(offense_time)
+        )
+```
+
+
+```{r}
+# check if the year column has updated 
+df %>% 
+  select(year) %>% 
+  unique() %>% 
+  arrange(desc(year))
+```
