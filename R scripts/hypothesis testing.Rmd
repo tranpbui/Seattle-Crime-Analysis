@@ -53,7 +53,7 @@ for (year in c(2015:2020))
 [1] 75790
 
 
-#compute z-scores
+# compute z-scores of each year vs 2020
  ```{r}
  
 # 2015
