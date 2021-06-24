@@ -56,7 +56,7 @@ df1 <-  df %>%
 ```
 
 
-## Categories of Crimes in Seattle 2015 - 2020
+# Categories of Crimes in Seattle 2015 - 2020
 
 ```{r, out.width='100%', fig.align="center"}
 
@@ -78,7 +78,7 @@ df %>%
 ```
 
 
-## Categories of Crimes in Seattle 2015 - 2020 (facet_wrap)
+# Categories of Crimes in Seattle 2015 - 2020 (facet_wrap)
 ```{r, out.width='100%', fig.align="center"}
 
 df %>% 
@@ -118,7 +118,7 @@ df %>%
 ```
          
          
-Top 10 Crime Types in Seattle 2015 - 2020
+# Top 10 Crime Types in Seattle 2015 - 2020
 ```{r}
 
 df %>% 
