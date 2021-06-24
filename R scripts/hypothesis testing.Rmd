@@ -1,0 +1,89 @@
+# extract crime statistics
+# the number of drug crimes of each year compared to the crime total
+
+```{r}
+
+drug_crimes <- function(data, yearFilter)
+{  
+  df_yearFilter <- data %>% 
+    filter(year == yearFilter)
+    cat( yearFilter,"data\n")
+    print(mean(df_yearFilter$parent_group == "DRUG/NARCOTIC OFFENSES"))
+    print(sum(df_yearFilter$parent_group == "DRUG/NARCOTIC OFFENSES"))
+    print(nrow(df_yearFilter))
+    cat("\n")
+
+}
+
+for (year in c(2015:2020))
+  drug_crimes(df, year)
+  
+  ```
+  
+  
+  # results
+  2015 data
+[1] 0.02396806
+[1] 1627
+[1] 67882
+
+2016 data
+[1] 0.02670471
+[1] 1881
+[1] 70437
+
+2017 data
+[1] 0.0322435
+[1] 2357
+[1] 73100
+
+2018 data
+[1] 0.02939263
+[1] 2214
+[1] 75325
+
+2019 data
+[1] 0.02334647
+[1] 1641
+[1] 70289
+
+2020 data
+[1] 0.01319435
+[1] 1000
+[1] 75790
+
+
+#compute z-scores
+ ```{r}
+ 
+# 2015
+Pe_2015 <- (1627+1000)/(67882+75790)
+num_2015 <- 0.02396806- 0.01319435
+denom_2015 <- sqrt(((Pe_2015 *(1-Pe_2015 ))/67882) + ((Pe_2015 *(1-Pe_2015))/75790))            
+cat("z-score of 2015 vs 2020:", num_2015/denom_2015)
+
+# 2016
+Pe_2016 <- (1881+1000)/(70437+75790)
+num_2016 <- 0.02670471- 0.01319435
+denom_2016 <- sqrt(((Pe_2016 *(1-Pe_2016 ))/70437) + ((Pe_2016 *(1-Pe_2016))/75790))            
+cat("z-score of 2016 vs 2020:", num_2016/denom_2016)
+
+# 2017
+Pe_2017 <- (2357+1000)/(73100+75790)
+num_2017 <- 0.0322435- 0.01319435
+denom_2017 <- sqrt(((Pe_2017 *(1-Pe_2017 ))/73100) + ((Pe_2017 *(1-Pe_2017))/75790))          
+cat("z-score of 2017 vs 2020:", num_2017/denom_2017)
+
+# 2018
+Pe_2018 <- (2214+1000)/(75325+75790)
+num_2018 <- 0.02939263- 0.01319435
+denom_2018 <- sqrt(((Pe_2018 *(1-Pe_2018 ))/75325) + ((Pe_2018 *(1-Pe_2018))/75790))           
+cat("z-score of 2018 vs 2020:", num_2018/denom_2018)
+
+# 2019
+Pe_2019 <- (2214+1000)/(75325+75790)
+num_2019 <- 0.02939263- 0.01319435
+denom_2019 <- sqrt(((Pe_2019 *(1-Pe_2019 ))/70289) + ((Pe_2019 *(1-Pe_2019))/75790))            
+cat("z-score of 2019 vs 2020:", num_2019/denom_2019)
+
+```
