@@ -1,0 +1,250 @@
+# Seattle Population Growth 2015 - 2020
+```{r}
+
+pop <- c(688156, 710510, 729601, 744955, 753675,776555)
+year <- c(2015,2016,2017,2018,2019,2020)
+
+a <- ggplot(data = NULL, aes(x = year, y = pop)) +
+  geom_col(fill = '#8abbd0', width = 0.6, color = "black") +
+  geom_smooth(color = "dodgerblue3", size = 2) +
+  scale_y_continuous(labels = scales::comma) +
+  scale_x_continuous(breaks = c(2015:2020), labels = c("2015", "2016", "2017", "2018", "2019","2020")) +
+  geom_text(aes(label = format(pop, big.mark = ",")), position = position_stack(vjust = 1.05), size = 3) + # display the values count on the bar chart
+  labs(x = NULL, y = "Population", title = "Seattle Population Growth 2015 - 2020") +
+  theme_economist()
+ ggplotly(a)
+
+```
+
+# Seattle Crime Rate 2015 - 2020
+```{r}
+
+pop <- c(688156, 710510, 729601, 744955, 753675,776555)
+total_crime <- c(67882, 70437, 73100, 75325, 70289, 75790)
+crime_rate <- round(total_crime/pop * 100000, digits = 0)
+
+b <- ggplot(data = NULL, aes(x = year, y = crime_rate)) +
+  geom_col(fill = '#8abbd0', width = 0.6, color = "black") +
+  geom_smooth(color = "dodgerblue3", size = 2) +
+  scale_y_continuous(labels = scales::comma) +
+  scale_x_continuous(breaks = c(2015:2020), labels = c("2015", "2016", "2017", "2018", "2019","2020")) +
+  geom_text(aes(label = format(crime_rate, big.mark = ",")), position = position_stack(vjust = 1.05), size = 3) + # display the values count on the bar chart
+  labs(x = NULL, y = "Reported Crimes per 100,000 residents", title = "Seattle Crime Rate 2015 - 2020") +
+  theme_economist()
+ ggplotly(b)
+ 
+```
+
+# Total Reported Crimes in Seattle 2015 - 2020
+```{r, message = FALSE, warning =FALSE}
+
+df1 <-  df %>% 
+  #na.omit() %>% 
+  group_by(year) %>% 
+  summarise(count = n()) 
+  
+  g <- ggplot(df1,aes(x = year, y = count)) +
+  geom_col(fill = '#8abbd0', width = 0.6, color = "black") +
+  geom_smooth(color = "dodgerblue3", size = 2) +
+  scale_x_continuous(breaks = c(2015:2020), labels = c("2015", "2016", "2017", "2018", "2019","2020")) +
+  scale_y_continuous(labels =  scales::comma) +
+  geom_text(aes(label = format(count, big.mark = ",")), position = position_stack(vjust = 1.05), size = 3) +
+  labs(x = NULL, y = "Count", title = "Total Reported Crimes in Seattle 2015 - 2020") +
+  theme_economist()
+ ggplotly(g)  
+ 
+```
+
+
+## Categories of Crimes in Seattle 2015 - 2020
+
+```{r, out.width='100%', fig.align="center"}
+
+df %>% 
+  filter(crime_category %in% c("PERSON", "PROPERTY", "SOCIETY")) %>% 
+  group_by(crime_category, year) %>% 
+  summarise(count = n()) %>% 
+  
+  ggplot(aes(x = year, y = count, fill = factor(crime_category, levels = c("SOCIETY","PERSON", "PROPERTY" )))) +
+  guides(fill = guide_legend(title = "Crime Category")) +
+  scale_x_continuous(breaks = c(2015:2020), labels = c("2015", "2016", "2017", "2018", "2019","2020")) +
+  scale_y_continuous(labels = scales::percent) +
+  geom_col(position = "fill", col = "gray30") +
+  labs(x = NULL,y = NULL) + 
+  scale_fill_brewer(palette = "Dark2") +
+  scale_fill_manual(values=c("#A6D854", "#FC8D62", "#56B4E9"), labels = c("Society", "Person", "Property")) +
+  theme_economist()
+  
+```
+
+
+## Categories of Crimes in Seattle 2015 - 2020 (facet_wrap)
+```{r, out.width='100%', fig.align="center"}
+
+df %>% 
+  filter(crime_category %in% c("PERSON", "PROPERTY", "SOCIETY")) %>% 
+  group_by(crime_category, year) %>% 
+  summarise(count = n()) %>% 
+  
+  ggplot(aes(x = year, y = count, fill = factor(crime_category, levels = c("PROPERTY","PERSON", "SOCIETY" )))) +
+  guides(fill = guide_legend(title = "Crime Category")) +
+  scale_x_continuous(breaks = c(2015:2020), labels = c("2015", "2016", "2017", "2018", "2019","2020")) +
+  scale_y_continuous(labels = scales::comma) +
+  geom_col(position = position_dodge2(), col = "gray30") +
+  labs(x = NULL,y = "Count") + 
+  scale_fill_brewer(palette = "Dark2") +
+  scale_fill_manual(values=c("#56B4E9","#FC8D62","#A6D854"), labels = c("Property", "Person", "Society")) +
+  theme_economist()
+  
+```
+
+
+# Top 10 Most Dangerous Neighborhoods 2015 - 2020
+```{r}
+
+df %>% 
+  count(area) %>% 
+  mutate(area = fct_reorder(area, n)) %>%
+  arrange(desc(n)) %>% 
+  head(10) %>%   
+  ggplot(aes(x = area, y = n)) +
+  geom_col(fill = '#8abbd0', color = "black") +
+  coord_flip() +
+  scale_y_continuous(labels = scales :: comma) +
+  geom_text(aes(label = format(n, big.mark = ",")), position = position_stack(vjust = 0.5), size = 3) + # display the values count on the bar chart
+  labs(x = NULL, y = "Count of incidents") +
+  theme_economist()
+   
+```
+         
+         
+Top 10 Crime Types in Seattle 2015 - 2020
+```{r}
+
+df %>% 
+   count(parent_group) %>% 
+  mutate(parent_group = fct_reorder(parent_group, n)) %>%
+  arrange(desc(n)) %>% 
+  head(10) %>% 
+
+  ggplot(aes(x = parent_group, y = n)) +
+  geom_col(fill = '#8abbd0') +
+  coord_flip() +
+  scale_y_continuous(labels = scales::comma) + 
+  geom_text(aes(label = format(n, big.mark = ",")), position = position_stack(vjust = 0.5), size = 3) + 
+  labs(x = NULL, y = "Count", title = "Top 10 Crime Types in Seattle 2015 - 2020") +
+  theme_economist()
+  
+```
+
+
+# Top 10 Offense Types in Seattle 2015 - 2020 
+
+```{r, out.width='100%', fig.align="center"}
+
+df %>% 
+  group_by(crime_category, offense) %>% 
+  summarise(count = n()) %>% 
+  mutate(offense = fct_reorder(offense, count)) %>% 
+  arrange(desc(count)) %>% 
+  head(10) %>% 
+
+  
+  ggplot(aes(x = reorder(offense, count), y = count, fill = factor(crime_category, levels = c("PROPERTY","PERSON", "SOCIETY" )))) +
+  geom_col(lwd = 0.01, col = "black") +
+  coord_flip() +
+  scale_y_continuous(labels = scales::comma) +
+  geom_text(aes(label = format(count, big.mark = ",")), position = position_stack(vjust = 0.5), size = 3) + # display the values count on the bar chart
+  guides(fill = guide_legend(title = "Crime Category")) +
+  labs(x = NULL, y = "Count") +
+  scale_fill_brewer(palette = "Dark2") +
+  scale_fill_manual( values=c( "#56B4E9","#FC8D62", "#A6D854"), labels = c("Property", "Person", "Society")) +
+  theme_economist()
+  
+```
+
+
+# Offense Types by Hour of Day
+```{r}
+
+df %>% 
+  select(offense, year, month, day, hour) %>% 
+  filter(offense %in% c("Theft From Motor Vehicle",
+                        "Burglary/Breaking & Entering",
+                        "Destruction/Damage/Vandalism of Property",
+                        "All Other Larceny",
+                        "Simple Assault",
+                        "Shoplifting",
+                        "Motor Vehicle Theft",
+                        "Trespass of Real Property",
+                        "Aggravated Assault",
+                        "Intimidation")
+         )
+         
+
+crime_by_hour <- function(data, offense_filter) 
+{
+  df_small1 <- data %>% 
+    filter(offense == offense_filter) %>% 
+    group_by(year,hour, crime_category) %>% 
+    summarise(count = n()) 
+  
+  g <-ggplot(df_small1, aes(x = hour, y = count)) +
+      geom_line(color = "dodgerblue3", size = 1.5) +
+      facet_wrap(~year) +
+      scale_x_continuous(breaks = seq(0,23, by = 1)) +
+      labs( x= 'Hour' , y = "Count" ,title = paste(offense_filter, "by Hour of Day", sep = " ")) +
+      theme_economist()
+
+  return(g)
+  }
+  
+offense_list <- c("Theft From Motor Vehicle",
+                  "Burglary/Breaking & Entering",
+                  "Destruction/Damage/Vandalism of Property",
+                  "All Other Larceny",
+                  "Simple Assault",
+                  "Shoplifting",
+                  "Motor Vehicle Theft",
+                  "Trespass of Real Property",
+                  "Aggravated Assault",
+                  "Intimidation"
+                  )
+
+for (i in offense_list)
+  print(crime_by_hour(df,i))
+  
+```
+
+# Create interactive spatial maps
+# Assault 
+```{r}
+my_title <- tags$b("Assault")
+# ASSAULT OFFENSES
+df_assault_address <- df %>% 
+  select(parent_group, area, address, long, lat) %>% 
+  filter(parent_group == "ASSAULT OFFENSES" ) %>% 
+  group_by(area, address) %>% 
+  summarise(count = n(), long = mean(long), lat = mean(lat)) %>%
+  arrange(desc(count)) %>% 
+  na.omit() %>% 
+  head(50) 
+
+icons <- makeIcon(iconUrl = 'https://cdn0.iconfinder.com/data/icons/topics/256/icon_crime-512.png',
+                  iconWidth = 40, iconHeight = 40,
+                  iconAnchorX = 20, iconAnchorY = 40)
+
+df_assault_address %>%
+  select(lat, long) %>% 
+  leaflet() %>% 
+  addTiles() %>% 
+  addProviderTiles(provider = "Esri.WorldStreetMap",group = "World StreetMap") %>%
+  addLayersControl(
+    baseGroups = c("OSM (default)","World StreetMap"),
+    options = layersControlOptions(collapsed = FALSE)
+  ) %>%
+  addMarkers(icon =icons, popup = df_assault_address$address) %>% 
+  addControl(my_title, position = "topright" )
+```
+
+    
