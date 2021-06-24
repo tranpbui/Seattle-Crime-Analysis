@@ -11,4 +11,4 @@ The  crime  dataset  is  from  the  City  of  Seattle  Open  Data  portal  spann
 I would like to express my very great appreciation to my primary instructor - Dr. Sloughter, who guided me throughout this project. This project could not be completed without his valuable support and constructive feedback.
 
 ### Reference
-[1] Larsen, R. J., & Marx, M. L. (2001). \textit{An introduction to mathematical statistics and its applications}. Upper Saddle River, NJ: Prentice Hall.
+Larsen, R. J., & Marx, M. L. (2001). _An introduction to mathematical statistics and its applications_. Upper Saddle River, NJ: Prentice Hall.
